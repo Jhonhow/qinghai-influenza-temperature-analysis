@@ -18,7 +18,7 @@ The scripts may require local input and output paths to be configured before use
 
 ## Data and access
 
-- **Influenza surveillance data:** county-week aggregated surveillance records were used in the study. These records are not included because they are subject to data-access restrictions. Individual-level records are also not included. For information about authorized access, contact the corresponding author, Fenglu Zhao (`fengluzhao@cams.cn`). Access is subject to the relevant institutional approvals.
+- **Influenza surveillance data:** county-week aggregated surveillance records were used in the study. These records are not included because they are subject to data-access restrictions. Individual-level records are also not included. For information about authorized access, contact the corresponding author, Fenglu Zhao (`fengluzhao@cams.cn`) and Xuli Li (`qhcdcxull@126.com`). Access is subject to the relevant institutional approvals.
 - **Meteorological data:** the study used daily 0.1° ChinaMet gridded meteorological data. The original gridded files are not included in this repository. The author-provided processing description is to average grid-cell values within administrative polygons, including cells whose centers fall inside each polygon, and then aggregate county-day values to epidemiological weeks.
 - **Administrative boundaries:** the described processing used 2024 provincial, prefectural, and county boundaries from the National Platform for Common Geospatial Information Services (Tianditu), approval number GS(2024)0650. Boundary files are not bundled here; users should obtain them from the provider and check the applicable terms before use.
 
