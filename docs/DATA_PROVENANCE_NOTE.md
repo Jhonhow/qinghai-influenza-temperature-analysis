@@ -1,0 +1,7 @@
+# Meteorological input and processing provenance
+
+The manuscript identifies daily 0.1° ChinaMet meteorological data from the National Cryosphere Desert Data Center (DOI: <https://doi.org/10.12072/ncdc.nieer.db6722.2025>). The author reports that daily grid values were averaged within province-, prefecture-, and county-level 2024 Tianditu administrative boundaries (map approval no. GS(2024)0650), with raster cells included when their centers fell inside the county polygon. County-day meteorology was then aggregated to epidemiological weeks for the analysis.
+
+The newly included R script `01_data_preparation/07_extract_daily_grid_to_admin_mean.R` is a reconstruction based on that description, not the original historical script. It implements an unweighted mean of cell-center-in-polygon values and records valid-cell counts. The original ChinaMet rasters and historical extraction log are not included here. NoData handling, exact source boundary-file version/fields, and the end-to-end output comparison remain to be confirmed. The script has only passed a synthetic smoke test; it has not been validated against the research rasters.
+
+The study used R 4.5.1, as confirmed by the author. Package versions and a complete lock file still need to be archived from the actual analysis environment. Do not redistribute ChinaMet or boundary files unless their applicable terms permit it; provide source/DOI and retrieval instructions instead.
