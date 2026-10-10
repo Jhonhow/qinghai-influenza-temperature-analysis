@@ -1,35 +1,35 @@
-# Candidate analysis-code bundle (review before release)
+# Qinghai influenza–temperature analysis
 
-This is a curated, **not-yet-publishable** copy of scripts selected as most relevant to the current GeoHealth manuscript. Source files in the project archive remain unchanged. Candidate copies have limited path/source-call portability edits; these edits were not tested by refitting models.
+This repository contains R and supporting scripts for our ecological time-series study of influenza activity and ambient temperature across counties in Qinghai, China. The analysis covers data preparation, primary models, robustness analyses, and the generation of figures and tables for the manuscript.
 
-## Suggested workflow and dependencies
+The code is provided to document the analytical workflow. It does not include restricted surveillance records or the full set of meteorological input files. Please read the data and reproducibility notes below before attempting to run the scripts.
 
-Run from this directory (the candidate root), after installing the packages used by the scripts and arranging authorized inputs:
+## Analysis workflow
 
-1. `R/00_config.R` — shared configuration; then `01_data_preparation/01_audit_raw_data.R` through `03_freeze_analysis_protocol_inputs.R` for input checks/protocol records.
-2. `01_data_preparation/07_extract_daily_grid_to_admin_mean.R` — reconstructed, configurable grid-to-polygon daily-mean template. It has not been run against the original ChinaMet files and is not the recovered historical script. Then `05_merge_daily_weather_inputs.py` and `06_build_daily_weather_workbook.py` merge/build county-day weather inputs.
-3. `01_data_preparation/04_build_county_week_panel_v4.R` — build the weekly panel from county-day inputs and the prior panel. This is the downstream aggregation boundary represented in the available code.
-4. `02_primary_models/80_primary_models.R` — primary models; `81`–`83` are confirmatory/context analyses. `61` and `75` contain subtype/lag analyses.
-5. `03_robustness_validation/92`–`96` — robustness, temporal sensitivity, and supplementary result tables.
-6. `04_figure_generation/` and `05_table_generation/` — figure and table outputs. Confirm each script against the final manuscript/figure files before release.
+The scripts are organized by stage. Run them from the repository root and retain the folder structure so that relative paths and sourced scripts resolve correctly.
 
-Some robustness scripts source other scripts, so run from the candidate root and retain the folder structure. Inputs, output folders, and permissions may still require author-specific configuration.
+1. **Configure and check inputs:** `R/00_config.R`, followed by the relevant scripts in `01_data_preparation/` (including the input audit and protocol records).
+2. **Prepare county-level weather inputs:** use the weather preparation scripts in `01_data_preparation/` to create or combine county-day inputs, then run `04_build_county_week_panel_v4.R` to construct the county-week analysis panel.
+3. **Fit the models:** run `02_primary_models/80_primary_models.R` for the primary analyses. Other scripts in this folder contain confirmatory, contextual, subtype, and lag analyses.
+4. **Assess robustness:** scripts `92`–`96` in `03_robustness_validation/` cover the robustness and temporal-sensitivity analyses and related supplementary outputs.
+5. **Generate outputs:** scripts in `04_figure_generation/` and `05_table_generation/` generate figures and tables.
 
-## Paths and inputs
+The scripts may require local input and output paths to be configured before use. The workflow above describes the intended order based on the available scripts; it is not a claim that the repository has been tested as a complete, one-click pipeline in a clean environment.
 
-- `QH_PROJECT_ROOT`: project/data root. Defaults to the current working directory where used.
-- `QH_MET_WORKBOOK`: optional county-day meteorology workbook; default is `<QH_PROJECT_ROOT>/data/updated_met_t2m_pressure.xlsx`.
-- `QH_COUNTY_SHAPEFILE`: optional county boundary shapefile; default is `data/qinghai_shp/china_county.shp` relative to the working directory.
-- For script 07, set `QH_GRID_MANIFEST`, `QH_BOUNDARY_SHP`, and `QH_ADMIN_ID_FIELD`; optionally set `QH_ADMIN_NAME_FIELD`, `QH_ADMIN_LEVEL`, `QH_BOUNDARY_FILTER_FIELD`, and `QH_BOUNDARY_FILTER_VALUE`. The bundled county shapefile contains 2,891 national county features, so filter to Qinghai or use a Qinghai-only boundary file before extraction.
-- Surveillance count data and the county-week analysis panel are restricted and are not included in this code bundle. Do not add them to a public repository.
-- The analyst must supply the corresponding ChinaMet county-day derivatives and other covariates. Original gridded files may be large and redistribution rights are unconfirmed.
+## Data and access
 
-## Scope and known gaps
+- **Influenza surveillance data:** county-week aggregated surveillance records were used in the study. These records are not included because they are subject to data-access restrictions. Individual-level records are also not included. For information about authorized access, contact the corresponding author, Fenglu Zhao (`fengluzhao@cams.cn`). Access is subject to the relevant institutional approvals.
+- **Meteorological data:** the study used daily 0.1° ChinaMet gridded meteorological data. The original gridded files are not included in this repository. The author-provided processing description is to average grid-cell values within administrative polygons, including cells whose centers fall inside each polygon, and then aggregate county-day values to epidemiological weeks.
+- **Administrative boundaries:** the described processing used 2024 provincial, prefectural, and county boundaries from the National Platform for Common Geospatial Information Services (Tianditu), approval number GS(2024)0650. Boundary files are not bundled here; users should obtain them from the provider and check the applicable terms before use.
 
-The author reports that daily 0.1° ChinaMet grid values were averaged within the 2024 Tianditu provincial, prefectural, and county administrative polygons (approval no. GS(2024)0650) to produce daily summaries, then county daily data were aggregated to epidemiological weeks. The author has confirmed that cells are included when their centers fall inside a county polygon. The historical extraction code/log and exact NoData handling remain unavailable. Script `07_extract_daily_grid_to_admin_mean.R` is a transparent reconstruction of the confirmed unweighted cell-center rule, not the recovered historical script; no ChinaMet raster was available for research-data validation. See `docs/DATA_PROVENANCE_NOTE.md`. No monthly meteorological exposure workflow was located.
+### Weather extraction script
 
-The author confirms that the analysis used R 4.5.1. The script writes a sessionInfo() record for the environment in which the template is run; this is not evidence of the historical package versions.
+`01_data_preparation/07_extract_daily_grid_to_admin_mean.R` implements the confirmed cell-center inclusion rule as a configurable grid-to-polygon daily-mean template. It was added to make the described processing approach reproducible; it is not the historical extraction script used to produce the study data. The original ChinaMet rasters and historical extraction log were not available for validation, so this template has not been tested against the study rasters. It passed a syntax check and a small synthetic test. Results from this template should therefore be checked against the study's authorized inputs before being used for research outputs.
 
-The new script passed an R 4.5.1 syntax check and a small synthetic two-polygon smoke test. No ChinaMet raster was available in this package, so no research extraction or output was produced.
+## Software
 
-The local `.mjs` table-formatting helpers are deliberately not included because they depend on a machine-local Codex `@oai/artifact-tool` runtime; use a portable, documented workflow if table formatting is part of the release. This candidate has not been run end-to-end, dependencies/environment locks and a license are missing, and some script names/lineage (notably Result 3) need author confirmation. **Do not make this repository public until those items and the authors' sharing approval are addressed.**
+The study analysis was conducted using R 4.5.1. Package versions from the original analysis environment were not available. When running the scripts, record the R and package versions in the active environment (for example, with `sessionInfo()`).
+
+## Reuse
+
+Please check the repository for a `LICENSE` file before reusing or redistributing code. In the absence of a license, this repository does not specify reuse permissions. Data access remains subject to the restrictions described above.
